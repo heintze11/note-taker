@@ -13,11 +13,11 @@ router.post('/', (req, res) => {
             noteName,
             note,
           };
-          readAndAppend(newFeedback, './db/feedback.json');
+          readAndAppend(newNote, './db/db.json');
 
           const response = {
             status: 'success',
-            body: newFeedback,
+            body: newNote,
           };
       
           res.json(response);

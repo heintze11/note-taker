@@ -2,7 +2,6 @@
 const express = require('express');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const notes = require('./db/db.json');
 const fs = require('fs');
 
 
@@ -20,10 +19,19 @@ app.get('/api/notes', (req, res) => {
   });
 
 app.post('/api/notes', (req, res) => {
-  
+  const notes = JSON.parse(fs.readFileSync('./db/db.json'));
+  const newNote = req.body;
+  newNote.id = uuidv4();
+  notes.push(newNote);
+  res.json(fs.writeFileSync('./db/db.json', JSON.stringify(notes)));
 })
 
+app.delete('./api/notes', (req, res) => {
+  const notes = JSON.parse(fs.readFileSync('./db/db.json'));
+  
 
+  res.json(fs.writeFileSync('./db/db.json', JSON.stringify(notes)));
+})
 
 
 

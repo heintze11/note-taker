@@ -7,17 +7,18 @@ const fs = require('fs');
 
 //set up port
 const PORT = process.env.PORT || 3001;
-const app = express();
 
+const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
-
 app.use(express.static('public'));
 
+// send the db file to the html
 app.get('/api/notes', (req, res) => {
     res.sendFile(path.join(__dirname, './db/db.json'))
   });
 
+  // read db file, then create new entry, then add entry to db file
 app.post('/api/notes', (req, res) => {
   const notes = JSON.parse(fs.readFileSync('./db/db.json'));
   const newNote = req.body;
@@ -26,14 +27,14 @@ app.post('/api/notes', (req, res) => {
   res.json(fs.writeFileSync('./db/db.json', JSON.stringify(notes)));
 })
 
-app.delete('./api/notes', (req, res) => {
+// Delete function based on ID
+app.delete('/api/notes/:id', (req, res) => {
   const notes = JSON.parse(fs.readFileSync('./db/db.json'));
   
+  const deleteNote = notes.filter((removeNote) => removeNote.id !== req.params.id);
 
-  res.json(fs.writeFileSync('./db/db.json', JSON.stringify(notes)));
+  res.json(fs.writeFileSync('./db/db.json', JSON.stringify(deleteNote)));
 })
-
-
 
 app.get('/', (req, res) =>
   res.sendFile(path.join(__dirname, '/public/index.html'))

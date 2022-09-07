@@ -24,7 +24,8 @@ app.post('/api/notes', (req, res) => {
   const newNote = req.body;
   newNote.id = uuidv4();
   notes.push(newNote);
-  res.json(fs.writeFileSync('./db/db.json', JSON.stringify(notes)));
+  fs.writeFileSync('./db/db.json', JSON.stringify(notes));
+  res.json(notes);
 })
 
 // Delete function based on ID
@@ -33,17 +34,21 @@ app.delete('/api/notes/:id', (req, res) => {
   
   const deleteNote = notes.filter((removeNote) => removeNote.id !== req.params.id);
 
-  res.json(fs.writeFileSync('./db/db.json', JSON.stringify(deleteNote)));
+  fs.writeFileSync('./db/db.json', JSON.stringify(deleteNote));
+  res.json(deleteNote);
 })
 
+// Send the index.html to load page
 app.get('/', (req, res) =>
   res.sendFile(path.join(__dirname, '/public/index.html'))
 );
 
+// Send the notes.html to load when at /notes
 app.get('/notes', (req, res) =>
   res.sendFile(path.join(__dirname, '/public/notes.html'))
 );
 
+// Catch all to default to index.html
 app.get('*', (req, res) =>
   res.sendFile(path.join(__dirname, '/public/index.html'))
 );
